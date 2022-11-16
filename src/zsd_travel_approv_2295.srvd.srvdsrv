@@ -1,0 +1,8 @@
+@EndUserText.label: 'SD Approv 2295'
+define service ZSD_TRAVEL_APPROV_2295 {
+  expose Z_C_ATRAVEL_2295 as Travel;
+  expose Z_C_ABOOKING_2295 as Booking;
+  expose /DMO/I_Customer as Passenger;
+  expose /DMO/I_Agency as Agency;
+  expose I_Currency as Currency;
+}
