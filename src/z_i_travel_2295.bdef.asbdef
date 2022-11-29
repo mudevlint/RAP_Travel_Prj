@@ -36,6 +36,18 @@ etag master LastChangedAt
   mapping for ZTB_TRAVEL_2295
   {
     TravelId = travel_id;
+    AgencyId = Agency_id;
+    customerid = Customer_id;
+    begindate = begin_date;
+    enddate = end_date;
+    currencyCode = currency_code;
+    bookingfee = booking_fee;
+    totalprice = total_price;
+    overallstatus = overall_status;
+    createdby = created_by;
+    createdat = created_at;
+    lastchangedby = last_changed_by;
+    lastchangedat = last_changed_at;
   }
 }
 
