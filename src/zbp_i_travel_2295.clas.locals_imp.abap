@@ -39,6 +39,69 @@ CLASS lhc_Travel IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD createTravelByTemplate.
+
+    "keys[ 1 ]-travel
+    "result[ 1 ]-
+    "mapped-
+    "failed-
+    "reported-
+
+    READ ENTITIES OF z_i_travel_2295
+        ENTITY Travel
+        FIELDS ( TravelId AgencyId CustomerId BookingFee TotalPrice CurrencyCode )
+        WITH VALUE #( FOR row_key IN keys ( %key = row_key-%key ) )
+        RESULT DATA(lt_entity_travel)
+        FAILED failed
+        REPORTED reported.
+
+*    READ ENTITY z_i_travel_2295
+*        FIELDS ( TravelId AgencyId CustomerId BookingFee TotalPrice CurrencyCode )
+*        WITH VALUE #( FOR row_key IN keys ( %key = row_key-%key ) )
+*        RESULT lt_read_entity_travel
+*        FAILED failed
+*        REPORTED reported.
+
+    DATA: lt_create_travel TYPE TABLE FOR CREATE z_i_travel_2295\\Travel.
+    DATA(lv_today) = cl_abap_context_info=>get_system_date( ).
+
+    SELECT MAX( travel_id ) FROM ztb_travel_2295
+    INTO @DATA(lv_travel_id).
+
+    lt_create_travel = VALUE #(  FOR create_row IN lt_entity_travel INDEX INTO idx
+                                   (  travelid      = lv_travel_id + idx
+                                      agencyid      = create_row-agencyid
+                                      customerid    = create_row-customerid
+                                      begindate     = lv_today
+                                      enddate       = lv_today + 30
+                                      bookingfee    = create_row-bookingfee
+                                      totalprice    = create_row-totalprice
+                                      currencycode  = create_row-currencycode
+                                      description    = 'Add Comments'
+                                      overallstatus = 'O' ) ).
+
+    MODIFY ENTITIES OF z_i_travel_2295
+    IN LOCAL MODE ENTITY Travel
+    CREATE FIELDS (  travelid
+                     agencyid
+                     customerid
+                     begindate
+                     enddate
+                     bookingfee
+                     totalprice
+                     currencycode
+                     description
+                     overallstatus )
+     WITH lt_create_travel
+     MAPPED mapped
+     FAILED failed
+     REPORTED reported.
+
+    result = VALUE #( FOR result_row IN lt_create_travel INDEX INTO idx1
+                      ( %cid_ref = keys[ idx1 ]-%cid_ref
+                       %key =  keys[ idx1 ]-%key
+                       %param = CORRESPONDING #( result_row ) ) ).
+
+
   ENDMETHOD.
 
   METHOD rejectTravel.

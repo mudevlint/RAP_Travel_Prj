@@ -8,7 +8,7 @@ ENDCLASS.
 
 CLASS lhc_Supplement IMPLEMENTATION.
 
-  METHOD calculaTeTotalSupplPrice.
+  METHOD calculateTotalSupplPrice.
   ENDMETHOD.
 
 ENDCLASS.
