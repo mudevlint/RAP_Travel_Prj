@@ -4,6 +4,7 @@ managed;
 define behavior for z_i_travel_2295 alias Travel //alias <alias_name>
 implementation in class zbp_i_travel_2295 unique
 persistent table ztb_travel_2295
+with additional save
 lock master
 authorization master ( instance )
 etag master LastChangedAt
@@ -11,9 +12,9 @@ etag master LastChangedAt
   // administrative fields: read only
   field ( readonly ) LastChangedAt, LastChangedBy, CreatedBy, CreatedAt;
   //mandatory fields that are required to create a travel
-  field ( mandatory ) AgencyId, OverallStatus, BookingFee, CurrencyCode;
+  field ( mandatory : create ) TravelId, AgencyId, OverallStatus, BookingFee, CurrencyCode;
   //Dinamic Field Control
-  field ( features : instance ) TravelId;
+  field ( features : instance ) TravelId, OverallStatus;
 
   create;
   update;
@@ -21,9 +22,9 @@ etag master LastChangedAt
 
   //validations
 
-  validation validateCustomer on save { field CustomerId; }
-  validation validateDates on save { field BeginDate, EndDate; }
-  validation validateStatus on save { field OverallStatus; }
+  validation validateCustomer on save { create; field CustomerId; }
+  validation validateDates on save { create; field BeginDate, EndDate; }
+  validation validateStatus on save { create; field OverallStatus; }
 
   //actions
   action ( features : instance ) acceptTravel result [1] $self;
@@ -60,24 +61,32 @@ etag master LastChangedAt
 {
   //Static fields control
   field ( readonly ) TravelId;
-  field ( mandatory ) CarrierId, ConnectionId, FlightDate, BookingStatus;
+  field ( mandatory : create ) BookingId, CarrierId, ConnectionId, FlightDate, BookingStatus;
   update;
   delete;
 
   // validations
-  validation validateStatus on save { field BookingStatus; }
+  validation validateStatus on save { create; field BookingStatus; }
   association _Travel;
 
   //determinations
   determination calculateTotalFlightPrice on modify { field FlightPrice, CurrencyCode; }
 
-
-
-  association _BookingSupplement { create; }
+  association _BookingSupplement { create ( features : instance ); }
 
   mapping for ZTB_BOOKING_2295
   {
     BookingDate = booking_date;
+    travelid = travel_id;
+    bookingid = booking_id;
+    customerid = customer_id;
+    carrierid = carrier_id;
+    connectionid = connection_id;
+    flightdate = flight_date;
+    flightprice = flight_price;
+    currencycode = currency_code;
+    bookingstatus = booking_status;
+    lastchangedat = last_changed_at;
   }
 }
 
@@ -89,7 +98,7 @@ authorization dependent by _Travel
 etag master Last_Changed_At
 {
   field ( readonly ) travel_id, booking_id;
-  field ( mandatory ) supplement_id, price;
+  field ( mandatory : create ) supplement_id, price;
   update;
   delete;
   association _Travel;

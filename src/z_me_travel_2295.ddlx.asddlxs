@@ -55,7 +55,8 @@ annotate view z_c_travel_2295 with
   CurrencyCode;
   @UI: { identification:[ { position: 46 } ] }
   Description;
-  @UI: { lineItem: [ { position: 50, importance: #HIGH }, { type: #FOR_ACTION, dataAction:
+  @UI: { lineItem: [ { position: 50, importance: #HIGH }, 
+  { type: #FOR_ACTION, dataAction:
   'createTravelByTemplate', label: 'Create Travel by Template' } ],
   identification: [ { position: 45, label: 'Status [O(Open)|A(Accepted)|X(Canceled)]' } ] }
   TravelStatus;
