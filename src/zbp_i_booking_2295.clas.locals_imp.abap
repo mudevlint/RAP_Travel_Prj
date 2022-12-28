@@ -7,11 +7,22 @@ CLASS lhc_Booking DEFINITION INHERITING FROM cl_abap_behavior_handler.
     METHODS validateStatus FOR VALIDATE ON SAVE
       IMPORTING keys FOR Booking~validateStatus.
 
+    METHODS get_features FOR INSTANCE FEATURES
+      IMPORTING keys REQUEST requested_features FOR Booking RESULT result.
+
 ENDCLASS.
 
 CLASS lhc_Booking IMPLEMENTATION.
 
   METHOD calculateTotalFlightPrice.
+
+    IF NOT keys IS INITIAL.
+
+      zcl_aux_travel_det_2295=>calculate_price( it_travel_id = value #( for groups <booking> of booking_key in keys
+                                                                        group by booking_key-travelid without members ( <booking> ) )   ).
+
+    ENDIF.
+
   ENDMETHOD.
 
   METHOD validateStatus.
@@ -36,6 +47,20 @@ CLASS lhc_Booking IMPLEMENTATION.
                           %element-bookingstatus = if_abap_behv=>mk-on ) TO reported-booking.
       ENDCASE.
     ENDLOOP.
+
+  ENDMETHOD.
+
+  METHOD get_features.
+
+    READ ENTITIES OF z_i_travel_2295
+    ENTITY Booking
+    FIELDS ( bookingid bookingdate customerid bookingstatus )
+    WITH VALUE #( FOR keyval IN keys ( %key = keyval-%key ) )
+    RESULT DATA(lt_booking_result).
+
+    result = VALUE #( FOR ls_travel IN lt_booking_result
+                        (  %key           = ls_travel-%key
+                           %assoc-_BookingSupplement = if_abap_behv=>fc-o-enabled ) ).
 
   ENDMETHOD.
 

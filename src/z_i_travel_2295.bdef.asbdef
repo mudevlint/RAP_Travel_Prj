@@ -32,7 +32,7 @@ etag master LastChangedAt
 
   action createTravelByTemplate result [1] $self;
 
-  association _Booking { create; }
+  association _Booking { create(features : instance); }
 
   mapping for ZTB_TRAVEL_2295
   {
@@ -62,6 +62,7 @@ etag master LastChangedAt
   //Static fields control
   field ( readonly ) TravelId;
   field ( mandatory : create ) BookingId, CarrierId, ConnectionId, FlightDate, BookingStatus;
+
   update;
   delete;
 

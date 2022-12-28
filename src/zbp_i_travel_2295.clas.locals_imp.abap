@@ -40,6 +40,7 @@ CLASS lhc_Travel IMPLEMENTATION.
     result = VALUE #( FOR ls_travel IN lt_travel_result ( %key = ls_travel-%key
                                                           %field-TravelId = if_abap_behv=>fc-f-read_only
                                                           %field-OverallStatus = if_abap_behv=>fc-f-read_only
+                                                          %assoc-_Booking      = if_abap_behv=>fc-o-enabled
                                                           %action-acceptTravel = COND #(  WHEN ls_travel-OverallStatus = 'A'
                                                                                           THEN if_abap_behv=>fc-o-disabled
                                                                                           ELSE if_abap_behv=>fc-o-enabled )
